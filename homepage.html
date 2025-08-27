@@ -813,7 +813,7 @@
                 const imageFormData = new FormData();
                 imageFormData.append('images', imageFile);
 
-                const uploadResponse = await fetch('http://localhost:3000/api/upload/artwork-images', {
+                const uploadResponse = await fetch(API_CONFIG.getApiUrl('/upload/artwork-images'), {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -829,7 +829,7 @@
                 }
 
                 // Now send artwork data with image URLs
-                const response = await fetch('http://localhost:3000/api/artworks', {
+                const response = await fetch(API_CONFIG.getApiUrl('/artworks'), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -996,7 +996,7 @@
                 const token = localStorage.getItem('artGalleryToken');
                 if (!token) return;
 
-                const response = await fetch('http://localhost:3000/api/artworks/my-artworks', {
+                const response = await fetch(API_CONFIG.getApiUrl('/artworks/my-artworks'), {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -1092,7 +1092,7 @@
                 showMessage('Processing bid acceptance...', 'info');
                 
                 const token = localStorage.getItem('artGalleryToken');
-                const response = await fetch(`http://localhost:3000/api/artworks/${artworkId}/accept-bid`, {
+                const response = await fetch(API_CONFIG.getApiUrl(`/artworks/${artworkId}/accept-bid`), {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1160,7 +1160,7 @@
                 const token = localStorage.getItem('artGalleryToken');
                 if (!token) return;
 
-                const response = await fetch('http://localhost:3000/api/notifications?limit=10', {
+                const response = await fetch(API_CONFIG.getApiUrl('/notifications?limit=10'), {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -1205,7 +1205,7 @@
                 const token = localStorage.getItem('artGalleryToken');
                 if (!token) return;
 
-                const response = await fetch('http://localhost:3000/api/notifications/unread-count', {
+                const response = await fetch(API_CONFIG.getApiUrl('/notifications/unread-count'), {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -1228,7 +1228,7 @@
                 const token = localStorage.getItem('artGalleryToken');
                 if (!token) return;
 
-                const response = await fetch('http://localhost:3000/api/notifications/read-all', {
+                const response = await fetch(API_CONFIG.getApiUrl('/notifications/read-all'), {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -1290,5 +1290,6 @@
             });
         });
     </script>
+    <script src="config.js"></script>
 </body>
 </html>
