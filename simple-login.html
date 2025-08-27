@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Login Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+        }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Art Marketplace Login</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('login')">Login</div>
+        <div class="tab" onclick="showTab('register')">Register</div>
+    </div>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showUserType('seller')">Seller</div>
+        <div class="tab" onclick="showUserType('buyer')">Buyer</div>
+    </div>
+    
+    <div id="message"></div>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+    
+    <!-- Seller Login -->
+    <div id="sellerLogin" class="form-section active">
+        <h2>Seller Login</h2>
+        <form id="sellerLoginForm">
+            <div class="form-group">
+                <label for="sellerEmail">Email:</label>
+                <input type="email" id="sellerEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="sellerPassword">Password:</label>
+                <input type="password" id="sellerPassword" name="password" required>
+            </div>
+            <button type="submit">Login as Seller</button>
+        </form>
+    </div>
+    
+    <!-- Seller Register -->
+    <div id="sellerRegister" class="form-section">
+        <h2>Seller Registration</h2>
+        <form id="sellerRegisterForm">
+            <div class="form-group">
+                <label for="sellerRegFirstName">First Name:</label>
+                <input type="text" id="sellerRegFirstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="sellerRegLastName">Last Name:</label>
+                <input type="text" id="sellerRegLastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="sellerRegEmail">Email:</label>
+                <input type="email" id="sellerRegEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="sellerRegPassword">Password:</label>
+                <input type="password" id="sellerRegPassword" name="password" required minlength="8">
+            </div>
+            <div class="form-group">
+                <label for="sellerRegConfirmPassword">Confirm Password:</label>
+                <input type="password" id="sellerRegConfirmPassword" name="confirmPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="artistName">Artist Name:</label>
+                <input type="text" id="artistName" name="artistName">
+            </div>
+            <button type="submit">Register as Seller</button>
+        </form>
+    </div>
+    
+    <!-- Buyer Login -->
+    <div id="buyerLogin" class="form-section">
+        <h2>Buyer Login</h2>
+        <form id="buyerLoginForm">
+            <div class="form-group">
+                <label for="buyerEmail">Email:</label>
+                <input type="email" id="buyerEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="buyerPassword">Password:</label>
+                <input type="password" id="buyerPassword" name="password" required>
+            </div>
+            <button type="submit">Login as Buyer</button>
+        </form>
+    </div>
+    
+    <!-- Buyer Register -->
+    <div id="buyerRegister" class="form-section">
+        <h2>Buyer Registration</h2>
+        <form id="buyerRegisterForm">
+            <div class="form-group">
+                <label for="buyerRegFirstName">First Name:</label>
+                <input type="text" id="buyerRegFirstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="buyerRegLastName">Last Name:</label>
+                <input type="text" id="buyerRegLastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="buyerRegEmail">Email:</label>
+                <input type="email" id="buyerRegEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="buyerRegPassword">Password:</label>
+                <input type="password" id="buyerRegPassword" name="password" required minlength="8">
+            </div>
+            <div class="form-group">
+                <label for="buyerRegConfirmPassword">Confirm Password:</label>
+                <input type="password" id="buyerRegConfirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit">Register as Buyer</button>
+        </form>
+    </div>
+
+    <script>
+        let currentTab = 'login';
+        let currentUserType = 'seller';
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function showTab(tab) {
+            currentTab = tab;
+            updateTabs();
+            updateForms();
+        }
+        
+        function showUserType(userType) {
+            currentUserType = userType;
+            updateTabs();
+            updateForms();
+        }
+        
+        function updateTabs() {
+            // Update tab buttons
+            document.querySelectorAll('.tabs .tab').forEach((tab, index) => {
+                tab.classList.remove('active');
+            });
+            
+            // First row of tabs (login/register)
+            const tabButtons = document.querySelectorAll('.tabs:first-child .tab');
+            if (currentTab === 'login') {
+                tabButtons[0].classList.add('active');
+            } else {
+                tabButtons[1].classList.add('active');
+            }
+            
+            // Second row of tabs (seller/buyer)
+            const userTypeButtons = document.querySelectorAll('.tabs:last-child .tab');
+            if (currentUserType === 'seller') {
+                userTypeButtons[0].classList.add('active');
+            } else {
+                userTypeButtons[1].classList.add('active');
+            }
+        }
+        
+        function updateForms() {
+            // Hide all forms
+            document.querySelectorAll('.form-section').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Show the appropriate form
+            const formId = currentUserType + (currentTab === 'login' ? 'Login' : 'Register');
+            const form = document.getElementById(formId);
+            if (form) {
+                form.classList.add('active');
+            }
+        }
+        
+        // Form event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up forms...');
+            
+            // Seller Login
+            document.getElementById('sellerLoginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('Seller login submitted');
+                
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                showLoading();
+                
+                try {
+                    const response = await fetch('http://localhost:3000/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    hideLoading();
+                    
+                    if (result.success) {
+                        localStorage.setItem('artGalleryToken', result.data.token);
+                        localStorage.setItem('artGalleryUser', JSON.stringify(result.data.user));
+                        showMessage('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'homepage.html';
+                        }, 2000);
+                    } else {
+                        showMessage('Login failed: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showMessage('Network error: ' + error.message, 'error');
+                }
+            });
+            
+            // Seller Register
+            document.getElementById('sellerRegisterForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('Seller register submitted');
+                
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                if (data.password !== data.confirmPassword) {
+                    showMessage('Passwords do not match!', 'error');
+                    return;
+                }
+                
+                showLoading();
+                
+                try {
+                    const response = await fetch('http://localhost:3000/api/auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            email: data.email,
+                            password: data.password,
+                            userType: 'seller',
+                            artistName: data.artistName
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    hideLoading();
+                    
+                    if (result.success) {
+                        showMessage('Registration successful! You can now login.', 'success');
+                        e.target.reset();
+                    } else {
+                        showMessage('Registration failed: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showMessage('Network error: ' + error.message, 'error');
+                }
+            });
+            
+            // Buyer Login
+            document.getElementById('buyerLoginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('Buyer login submitted');
+                
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                showLoading();
+                
+                try {
+                    const response = await fetch('http://localhost:3000/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    hideLoading();
+                    
+                    if (result.success) {
+                        localStorage.setItem('artGalleryToken', result.data.token);
+                        localStorage.setItem('artGalleryUser', JSON.stringify(result.data.user));
+                        showMessage('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'gallery.html';
+                        }, 2000);
+                    } else {
+                        showMessage('Login failed: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showMessage('Network error: ' + error.message, 'error');
+                }
+            });
+            
+            // Buyer Register
+            document.getElementById('buyerRegisterForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('Buyer register submitted');
+                
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                if (data.password !== data.confirmPassword) {
+                    showMessage('Passwords do not match!', 'error');
+                    return;
+                }
+                
+                showLoading();
+                
+                try {
+                    const response = await fetch('http://localhost:3000/api/auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            email: data.email,
+                            password: data.password,
+                            userType: 'buyer'
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    hideLoading();
+                    
+                    if (result.success) {
+                        showMessage('Registration successful! You can now login.', 'success');
+                        e.target.reset();
+                    } else {
+                        showMessage('Registration failed: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showMessage('Network error: ' + error.message, 'error');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

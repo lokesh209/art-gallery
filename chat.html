@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtGallery - Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-info h3 {
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .chat-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chat-status {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f8f9ff;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .message.sent {
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .message.sent .message-avatar {
+            background: #28a745;
+        }
+
+        .message.received .message-avatar {
+            background: #667eea;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 15px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.sent .message-content {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+            margin-left: auto;
+        }
+
+        .message.received .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #eee;
+            border-bottom-left-radius: 5px;
+            margin-right: auto;
+        }
+
+        .message-text {
+            margin-bottom: 0.25rem;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+
+        .message.sent .message-time {
+            text-align: right;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .message-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .send-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .no-chat {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .chat-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .chat-item:hover {
+            background: #f8f9ff;
+        }
+
+        .chat-item.active {
+            background: #e8ecff;
+            border-left: 4px solid #667eea;
+        }
+
+        .chat-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-item-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .chat-item-time {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .chat-item-preview {
+            color: #666;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="homepage.html" class="logo">ArtGallery</a>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">User</span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <div id="chatList" class="chat-list" style="display: none;">
+            <div id="chatItems">
+                <!-- Chat items will be loaded here -->
+            </div>
+        </div>
+
+        <div id="chatContainer" class="chat-container" style="display: none;">
+            <div class="chat-header">
+                <div class="chat-info">
+                    <h3 id="chatTitle">Chat</h3>
+                    <p id="chatSubtitle">Artwork details</p>
+                </div>
+                <div class="chat-status">Active</div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="no-chat">Select a chat to start messaging</div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="messageInput" class="message-input" placeholder="Type your message..." maxlength="1000">
+                <button onclick="sendMessage()" class="send-btn" id="sendBtn">Send</button>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">Loading chats...</div>
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentChat = null;
+        let chats = [];
+
+        // Check if user is logged in
+        function checkUserLogin() {
+            const token = localStorage.getItem('artGalleryToken');
+            const userData = localStorage.getItem('artGalleryUser');
+            
+            if (!token || !userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                currentUser = JSON.parse(userData);
+                console.log('Parsed user data:', currentUser);
+                document.getElementById('userAvatar').textContent = currentUser.firstName.charAt(0).toUpperCase();
+                document.getElementById('userName').textContent = currentUser.firstName + ' ' + currentUser.lastName;
+                loadChats();
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Load user's chats
+        async function loadChats() {
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                if (!token) return;
+
+                // Make sure currentUser is loaded
+                if (!currentUser) {
+                    console.error('Current user not loaded');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/chats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    chats = result.data.chats;
+                    console.log('Loaded chats:', chats);
+                    console.log('Current user:', currentUser);
+                    console.log('Current user ID:', currentUser._id || currentUser.id);
+                    displayChatList();
+                    updateNotificationCount();
+                } else {
+                    showError('Failed to load chats: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error loading chats:', error);
+                showError('Error loading chats. Please try again.');
+            }
+        }
+
+        // Display chat list
+        function displayChatList() {
+            const chatItems = document.getElementById('chatItems');
+            const loading = document.getElementById('loading');
+            const chatList = document.getElementById('chatList');
+
+            console.log('Displaying chats, count:', chats.length);
+            const currentUserId = currentUser._id || currentUser.id;
+            console.log('Current user ID:', currentUserId);
+
+            if (chats.length === 0) {
+                chatItems.innerHTML = '<div style="padding: 2rem; text-align: center; color: #666;">No chats available</div>';
+            } else {
+                chatItems.innerHTML = chats.map(chat => {
+                    const otherUser = chat.seller._id === currentUserId ? chat.buyer : chat.seller;
+                    const lastMessage = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
+                    const unreadCount = chat.messages.filter(msg => !msg.isRead && msg.sender._id !== currentUserId).length;
+                    
+                    console.log('Chat display:', {
+                        chatId: chat._id,
+                        sellerId: chat.seller._id,
+                        buyerId: chat.buyer._id,
+                        currentUserId: currentUserId,
+                        otherUserName: otherUser.firstName + ' ' + otherUser.lastName,
+                        sellerName: chat.seller.firstName + ' ' + chat.seller.lastName,
+                        buyerName: chat.buyer.firstName + ' ' + chat.buyer.lastName
+                    });
+                    
+                    return `
+                        <div class="chat-item" onclick="openChat('${chat._id}', event)">
+                            <div class="chat-item-header">
+                                <div class="chat-item-title">
+                                    ${otherUser.firstName} ${otherUser.lastName}
+                                    ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
+                                </div>
+                                <div class="chat-item-time">
+                                    ${lastMessage ? new Date(lastMessage.createdAt).toLocaleDateString() : ''}
+                                </div>
+                            </div>
+                            <div class="chat-item-preview">
+                                ${chat.artworkTitle} - $${chat.soldPrice}
+                            </div>
+                            ${lastMessage ? `<div class="chat-item-preview">${lastMessage.content.substring(0, 50)}${lastMessage.content.length > 50 ? '...' : ''}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            loading.style.display = 'none';
+            chatList.style.display = 'block';
+        }
+
+        // Open a specific chat
+        async function openChat(chatId, event) {
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                const response = await fetch(`http://localhost:3000/api/chats/${chatId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentChat = result.data.chat;
+                    displayChat();
+                    
+                    // Update active chat in list
+                    document.querySelectorAll('.chat-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    if (event && event.target) {
+                        event.target.closest('.chat-item').classList.add('active');
+                    }
+                } else {
+                    showError('Failed to load chat: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error opening chat:', error);
+                showError('Error opening chat. Please try again.');
+            }
+        }
+
+        // Display chat messages
+        function displayChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            const messagesContainer = document.getElementById('messagesContainer');
+            const chatTitle = document.getElementById('chatTitle');
+            const chatSubtitle = document.getElementById('chatSubtitle');
+
+            // Set chat info
+            const currentUserId = currentUser._id || currentUser.id;
+            const otherUser = currentChat.seller._id === currentUserId ? currentChat.buyer : currentChat.seller;
+            
+            console.log('Display chat info:', {
+                currentUserId: currentUserId,
+                sellerId: currentChat.seller._id,
+                buyerId: currentChat.buyer._id,
+                otherUserName: otherUser.firstName + ' ' + otherUser.lastName,
+                sellerName: currentChat.seller.firstName + ' ' + currentChat.seller.lastName,
+                buyerName: currentChat.buyer.firstName + ' ' + currentChat.buyer.lastName
+            });
+            
+            chatTitle.textContent = otherUser.firstName + ' ' + otherUser.lastName;
+            chatSubtitle.textContent = currentChat.artworkTitle + ' - $' + currentChat.soldPrice;
+
+            // Display messages
+            if (currentChat.messages.length === 0) {
+                messagesContainer.innerHTML = '<div class="no-chat">No messages yet. Start the conversation!</div>';
+            } else {
+                messagesContainer.innerHTML = currentChat.messages.map(message => {
+                    const currentUserId = currentUser._id || currentUser.id;
+                    const isSent = message.sender._id === currentUserId;
+                    const time = new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    console.log('Message:', {
+                        senderId: message.sender._id,
+                        currentUserId: currentUserId,
+                        isSent: isSent,
+                        senderName: message.sender.firstName
+                    });
+                    
+                    return `
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            <div class="message-avatar">
+                                ${message.sender.firstName.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text">${message.content}</div>
+                                <div class="message-time">${time}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            chatContainer.style.display = 'flex';
+        }
+
+        // Send a message
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const content = messageInput.value.trim();
+
+            if (!content || !currentChat) return;
+
+            // Disable input while sending
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                const response = await fetch(`http://localhost:3000/api/chats/${currentChat._id}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Add message to current chat
+                    currentChat.messages.push(result.data.message);
+                    displayChat();
+                    messageInput.value = '';
+                    
+                    // Refresh chat list to show latest message
+                    loadChats();
+                } else {
+                    showError('Failed to send message: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showError('Error sending message. Please try again.');
+            } finally {
+                // Re-enable input
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        // Handle Enter key in message input
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Update notification count (placeholder function)
+        async function updateNotificationCount() {
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                if (!token) return;
+
+                const response = await fetch('http://localhost:3000/api/notifications/unread-count', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const countElement = document.getElementById('notificationCount');
+                    if (countElement) {
+                        countElement.textContent = result.data.count;
+                        countElement.style.display = result.data.count > 0 ? 'flex' : 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating notification count:', error);
+                // Don't show error for notification count
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('artGalleryToken');
+            localStorage.removeItem('artGalleryUser');
+            window.location.href = 'login.html';
+        }
+
+        // Auto-refresh chats every 30 seconds
+        setInterval(() => {
+            if (currentUser) {
+                loadChats();
+            }
+        }, 30000);
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserLogin();
+        });
+    </script>
+</body>
+</html>

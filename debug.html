@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Form</title>
+    <style>
+        body { font-family: Arial; margin: 50px; }
+        input, button { padding: 10px; margin: 5px; }
+        .message { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Debug Form Test</h1>
+    
+    <div id="message"></div>
+    
+    <form id="testForm">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Test Login</button>
+    </form>
+    
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted!');
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            console.log('Form data:', data);
+            
+            // Test the API
+            fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('API response:', result);
+                if (result.success) {
+                    showMessage('Login successful!', 'success');
+                } else {
+                    showMessage('Login failed: ' + result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('Network error: ' + error.message, 'error');
+            });
+        });
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + type;
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtGallery Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .pending {
+            color: #f39c12;
+        }
+
+        .approved {
+            color: #27ae60;
+        }
+
+        .rejected {
+            color: #e74c3c;
+        }
+
+        .artworks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .artwork-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .artwork-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .artwork-info {
+            padding: 1.5rem;
+        }
+
+        .artwork-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .artwork-artist {
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .artwork-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .artwork-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+            margin-top: 0.25rem;
+        }
+
+        .ai-verification {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .ai-result {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-result.human {
+            color: #27ae60;
+        }
+
+        .ai-result.ai {
+            color: #e74c3c;
+        }
+
+        .ai-confidence {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-reject {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .no-artworks {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            background: white;
+            border-radius: 15px;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .refresh-btn:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 ArtGallery Admin Panel</h1>
+            <p>Review and approve/reject submitted artworks</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number pending" id="pendingCount">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number approved" id="approvedCount">0</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number rejected" id="rejectedCount">0</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total Artworks</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-controls">
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <select class="filter-select" id="aiFilter">
+                    <option value="">All AI Results</option>
+                    <option value="human">Human-Created</option>
+                    <option value="ai">AI-Generated</option>
+                </select>
+                <button class="refresh-btn" onclick="loadArtworks()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="artworks-grid" id="artworksGrid">
+            <div class="loading">Loading artworks...</div>
+        </div>
+    </div>
+
+    <script>
+        let artworks = [];
+        let currentFilter = {};
+
+        // Check admin authentication
+        function checkAdminAuth() {
+            const token = localStorage.getItem('artGalleryToken');
+            const userData = localStorage.getItem('artGalleryUser');
+            
+            if (!token || !userData) {
+                showMessage('Please login as admin to access this panel', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return false;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                if (user.userType !== 'admin') {
+                    showMessage('Admin access required', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                    return false;
+                }
+            } catch (error) {
+                showMessage('Authentication error', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Load all artworks for admin review
+        async function loadArtworks() {
+            if (!checkAdminAuth()) return;
+
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                const response = await fetch('http://localhost:3000/api/artworks/admin', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    artworks = result.data.artworks;
+                    updateStats();
+                    renderArtworks();
+                } else {
+                    showMessage('Failed to load artworks: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error loading artworks:', error);
+                showMessage('Error loading artworks', 'error');
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const pending = artworks.filter(a => a.status === 'pending').length;
+            const approved = artworks.filter(a => a.isApproved).length;
+            const rejected = artworks.filter(a => a.status === 'rejected').length;
+            const total = artworks.length;
+
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+            document.getElementById('totalCount').textContent = total;
+        }
+
+        // Render artworks
+        function renderArtworks() {
+            const grid = document.getElementById('artworksGrid');
+            
+            if (artworks.length === 0) {
+                grid.innerHTML = '<div class="no-artworks">No artworks found</div>';
+                return;
+            }
+
+            const filteredArtworks = filterArtworks(artworks);
+            
+            if (filteredArtworks.length === 0) {
+                grid.innerHTML = '<div class="no-artworks">No artworks match the current filters</div>';
+                return;
+            }
+
+            grid.innerHTML = filteredArtworks.map(artwork => createArtworkCard(artwork)).join('');
+        }
+
+        // Filter artworks
+        function filterArtworks(artworks) {
+            return artworks.filter(artwork => {
+                const statusMatch = !currentFilter.status || artwork.status === currentFilter.status;
+                const aiMatch = !currentFilter.ai || 
+                    (currentFilter.ai === 'human' && artwork.aiVerificationResult?.isHumanCreated) ||
+                    (currentFilter.ai === 'ai' && !artwork.aiVerificationResult?.isHumanCreated);
+                
+                return statusMatch && aiMatch;
+            });
+        }
+
+        // Create artwork card
+        function createArtworkCard(artwork) {
+            const statusClass = artwork.status === 'pending' ? 'status-pending' : 'status-rejected';
+            const statusText = artwork.status === 'pending' ? 'Pending Review' : 'Rejected';
+            
+            const imageUrl = artwork.images && artwork.images.length > 0 ? 
+                artwork.images[0].url : 'https://via.placeholder.com/350x250?text=No+Image';
+            
+            const aiResult = artwork.aiVerificationResult;
+            const aiClass = aiResult?.isHumanCreated ? 'human' : 'ai';
+            const aiText = aiResult?.isHumanCreated ? '✅ Human-Created' : '❌ AI-Generated';
+            
+            return `
+                <div class="artwork-card">
+                    <img src="${imageUrl}" alt="${artwork.title}" class="artwork-image">
+                    <div class="artwork-info">
+                        <h3 class="artwork-title">${artwork.title}</h3>
+                        <p class="artwork-artist">by ${artwork.artist?.firstName} ${artwork.artist?.lastName}</p>
+                        <p class="artwork-description">${artwork.description}</p>
+                        
+                        <div class="artwork-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Price</div>
+                                <div class="detail-value">$${artwork.originalPrice}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Category</div>
+                                <div class="detail-value">${artwork.category}</div>
+                            </div>
+                        </div>
+                        
+                        ${aiResult ? `
+                            <div class="ai-verification">
+                                <div class="ai-result ${aiClass}">
+                                    <span>${aiText}</span>
+                                </div>
+                                <div class="ai-confidence">
+                                    Confidence: ${(aiResult.confidence * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-approve" onclick="approveArtwork('${artwork._id}')" 
+                                    ${artwork.isApproved ? 'disabled' : ''}>
+                                ${artwork.isApproved ? 'Approved' : 'Approve'}
+                            </button>
+                            <button class="btn btn-reject" onclick="rejectArtwork('${artwork._id}')"
+                                    ${artwork.status === 'rejected' ? 'disabled' : ''}>
+                                ${artwork.status === 'rejected' ? 'Rejected' : 'Reject'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Approve artwork
+        async function approveArtwork(artworkId) {
+            if (!checkAdminAuth()) return;
+
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                const response = await fetch(`http://localhost:3000/api/artworks/${artworkId}/approve`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Artwork approved successfully!', 'success');
+                    loadArtworks(); // Refresh the list
+                } else {
+                    showMessage('Failed to approve artwork: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error approving artwork:', error);
+                showMessage('Error approving artwork', 'error');
+            }
+        }
+
+        // Reject artwork
+        async function rejectArtwork(artworkId) {
+            if (!checkAdminAuth()) return;
+
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                const response = await fetch(`http://localhost:3000/api/artworks/${artworkId}/reject`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Artwork rejected successfully!', 'success');
+                    loadArtworks(); // Refresh the list
+                } else {
+                    showMessage('Failed to reject artwork: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error rejecting artwork:', error);
+                showMessage('Error rejecting artwork', 'error');
+            }
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = message;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // Filter change handlers
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            currentFilter.status = this.value;
+            renderArtworks();
+        });
+
+        document.getElementById('aiFilter').addEventListener('change', function() {
+            currentFilter.ai = this.value;
+            renderArtworks();
+        });
+
+        // Load artworks when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArtworks();
+        });
+    </script>
+</body>
+</html> 

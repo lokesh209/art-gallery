@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+    <style>
+        body { font-family: Arial; margin: 50px; }
+        input, button { padding: 10px; margin: 5px; width: 200px; }
+        .message { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Test Login</h1>
+    
+    <div id="message"></div>
+    
+    <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            console.log('Submitting:', data);
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response:', result);
+                
+                if (result.success) {
+                    showMessage('Login successful! Token: ' + result.data.token.substring(0, 20) + '...', 'success');
+                } else {
+                    showMessage('Login failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Network error: ' + error.message, 'error');
+            }
+        });
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + type;
+        }
+    </script>
+</body>
+</html> 

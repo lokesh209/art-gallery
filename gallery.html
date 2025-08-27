@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtGallery - Browse & Bid on Art</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Filters Section */
+        .filters {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+
+        /* Gallery Grid */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        #artGallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .art-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .art-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .no-artworks-message {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-artworks-message h3 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-artworks-message p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .art-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .art-info {
+            padding: 1.5rem;
+        }
+
+        .art-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .artist-name {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .art-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .price-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .original-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 0.9rem;
+        }
+
+        .current-bid {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .min-bid {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .timer {
+            background: #f8f9ff;
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .timer.urgent {
+            background: #fff5f5;
+            border-left-color: #e53e3e;
+            color: #e53e3e;
+        }
+
+        .timer.ending {
+            background: #fffbf0;
+            border-left-color: #d69e2e;
+            color: #d69e2e;
+        }
+
+        .bid-info {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .highest-bidder {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .bid-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .bid-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .bid-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .bid-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bid-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .bid-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-active {
+            background: #48bb78;
+        }
+
+        .status-sold {
+            background: #e53e3e;
+        }
+
+        .status-ending {
+            background: #d69e2e;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .bid-form {
+                flex-direction: column;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Top Message Bar */
+        .top-message {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1500;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Card-specific messages */
+        .card-message {
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .card-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .card-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">ArtGallery</a>
+            <ul class="nav-links">
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#categories">Categories</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li class="user-profile">
+                    <div class="user-avatar">U</div>
+                    <span>User</span>
+                    <a href="chat.html" style="margin-left: 1rem; text-decoration: none; color: #667eea; font-weight: 600;">💬 Chats</a>
+                    <button id="logoutBtn" style="background: none; border: none; color: #667eea; cursor: pointer; font-size: 0.9rem; margin-left: 1rem;">Logout</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Discover Amazing Artwork</h1>
+            <p>Browse, bid, and collect unique pieces from talented artists worldwide</p>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters">
+        <div class="container">
+            <div class="filter-row">
+                <div class="search-box">
+                    <input type="text" placeholder="Search artwork, artists..." id="searchInput">
+                </div>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="painting">Painting</option>
+                        <option value="drawing">Drawing</option>
+                        <option value="photography">Photography</option>
+                        <option value="digital">Digital Art</option>
+                        <option value="sculpture">Sculpture</option>
+                        <option value="mixed-media">Mixed Media</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Price Range</label>
+                    <select id="priceFilter">
+                        <option value="">All Prices</option>
+                        <option value="0-100">$0 - $100</option>
+                        <option value="100-500">$100 - $500</option>
+                        <option value="500-1000">$500 - $1,000</option>
+                        <option value="1000+">$1,000+</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active Bidding</option>
+                        <option value="ending">Ending Soon</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="gallery" id="artGallery">
+                <!-- Art cards will be dynamically generated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Bid Modal -->
+    <div class="modal" id="bidModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Place Your Bid</h3>
+                <button class="close-btn" id="closeBidModalBtn">&times;</button>
+            </div>
+            <div id="modalContent">
+                <!-- Modal content will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Artworks array (will be populated from backend)
+        let artworks = [];
+
+        let currentUser = "Guest";
+        let userData = null;
+
+        // Check if user is logged in
+        function checkUserLogin() {
+            const storedUser = localStorage.getItem('artGalleryUser');
+            if (storedUser) {
+                userData = JSON.parse(storedUser);
+                currentUser = userData.username || userData.email.split('@')[0];
+                updateUserDisplay();
+            } else {
+                // Redirect to login if not logged in
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Update user display in header
+        function updateUserDisplay() {
+            const userAvatar = document.querySelector('.user-avatar');
+            const userName = document.querySelector('.user-profile span');
+            
+            if (userData) {
+                userAvatar.textContent = currentUser.charAt(0).toUpperCase();
+                userName.textContent = currentUser;
+            }
+        }
+
+        // Initialize gallery
+        async function initGallery() {
+            await loadArtworks();
+            renderGallery();
+            startTimers();
+        }
+
+        // Load artworks from backend
+        async function loadArtworks() {
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                if (!token) {
+                    console.log('No token found, no artworks to display');
+                    artworks = [];
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/artworks', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success && result.data.artworks.length > 0) {
+                    // Transform backend data to match frontend format
+                    artworks = result.data.artworks.map(artwork => ({
+                        id: artwork._id,
+                        title: artwork.title,
+                        artist: artwork.artist?.firstName + ' ' + artwork.artist?.lastName || 'Unknown Artist',
+                        description: artwork.description,
+                        image: artwork.images?.[0]?.url || 'https://via.placeholder.com/300x200?text=No+Image',
+                        originalPrice: artwork.originalPrice,
+                        currentBid: artwork.currentBid,
+                        minBid: artwork.minBid,
+                        highestBidder: artwork.highestBidder?.firstName + ' ' + artwork.highestBidder?.lastName || 'No bids yet',
+                        bidCount: artwork.bidCount,
+                        status: artwork.status,
+                        endTime: artwork.auctionEndTime,
+                        category: artwork.category
+                    }));
+                    console.log('Loaded artworks from backend:', artworks);
+                } else {
+                    console.log('No artworks found in backend');
+                    artworks = []; // Keep empty array
+                }
+            } catch (error) {
+                console.log('Error loading artworks:', error);
+                artworks = []; // Keep empty array
+            }
+        }
+
+        // Render gallery
+        function renderGallery() {
+            const gallery = document.getElementById('artGallery');
+            gallery.innerHTML = '';
+
+            if (artworks.length === 0) {
+                gallery.innerHTML = `
+                    <div class="no-artworks-message">
+                        <h3>🎨 No Artworks Available</h3>
+                        <p>There are currently no artworks in the gallery.</p>
+                        <p>Be the first to upload some beautiful art!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            artworks.forEach(artwork => {
+                const card = createArtCard(artwork);
+                gallery.appendChild(card);
+            });
+
+            // Add event listeners to bid buttons
+            document.querySelectorAll('.bid-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const artworkId = this.getAttribute('data-artwork-id');
+                    placeBid(artworkId);
+                });
+            });
+        }
+
+        // Create art card
+        function createArtCard(artwork) {
+            const card = document.createElement('div');
+            card.className = 'art-card';
+            
+            const statusClass = artwork.status === 'sold' ? 'status-sold' : 
+                              artwork.status === 'ending' ? 'status-ending' : 'status-active';
+            const statusText = artwork.status === 'sold' ? 'SOLD' : 
+                             artwork.status === 'ending' ? 'ENDING' : 'ACTIVE';
+
+            card.innerHTML = `
+                <div class="status-badge ${statusClass}">${statusText}</div>
+                <img src="${artwork.image}" alt="${artwork.title}" class="art-image">
+                <div class="art-info">
+                    <h3 class="art-title">${artwork.title}</h3>
+                    <p class="artist-name">by ${artwork.artist}</p>
+                    <p class="art-description">${artwork.description}</p>
+                    
+                    <div class="price-info">
+                        <span class="original-price">$${artwork.originalPrice}</span>
+                        <span class="current-bid">$${artwork.currentBid}</span>
+                    </div>
+                    
+                    <div class="min-bid">Minimum bid: $${artwork.minBid}</div>
+                    
+                    <div class="card-message" id="message-${artwork.id}" style="display: none;"></div>
+                    
+                    ${artwork.status !== 'sold' ? `
+                        <div class="timer" id="timer-${artwork.id}">
+                            ${artwork.endTime ? formatTimeLeft(artwork.endTime) : 'No bids yet'}
+                        </div>
+                        
+                        <div class="bid-info">
+                            <div class="highest-bidder">Highest bidder: ${artwork.highestBidder}</div>
+                            <div class="bid-count">${artwork.bidCount} bids placed</div>
+                        </div>
+                        
+                        <div class="bid-form">
+                            <input type="number" class="bid-input" id="bid-${artwork.id}" 
+                                   placeholder="Enter your bid" min="${artwork.minBid}" step="1">
+                            <button class="bid-btn" data-artwork-id="${artwork.id}" 
+                                    ${artwork.status === 'sold' ? 'disabled' : ''}>
+                                Place Bid
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="bid-info">
+                            <div class="highest-bidder">Sold to: ${artwork.highestBidder}</div>
+                            <div class="bid-count">Final price: $${artwork.currentBid}</div>
+                        </div>
+                    `}
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Place bid
+        async function placeBid(artworkId) {
+            const artwork = artworks.find(art => art.id === artworkId);
+            const bidInput = document.getElementById(`bid-${artworkId}`);
+            const bidAmount = parseInt(bidInput.value);
+
+            if (!bidAmount || bidAmount < artwork.minBid) {
+                showCardMessage(artworkId, `Bid must be at least $${artwork.minBid}`, 'error');
+                return;
+            }
+
+            if (bidAmount <= artwork.currentBid) {
+                showCardMessage(artworkId, `Bid must be higher than current bid of $${artwork.currentBid}`, 'error');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('artGalleryToken');
+                if (!token) {
+                    showCardMessage(artworkId, 'Please log in to place a bid', 'error');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/bids', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        artworkId: artworkId,
+                        amount: bidAmount
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Update local data
+                    artwork.currentBid = bidAmount;
+                    artwork.highestBidder = currentUser;
+                    artwork.bidCount++;
+                    artwork.status = 'active';
+                    
+                    // Start timer if this is the first bid
+                    if (!artwork.endTime) {
+                        artwork.endTime = Date.now() + (12 * 60 * 60 * 1000); // 12 hours
+                    } else {
+                        // Reset timer to 12 hours
+                        artwork.endTime = Date.now() + (12 * 60 * 60 * 1000);
+                    }
+
+                    // Update display
+                    renderGallery();
+                    startTimers();
+                    
+                    showTopMessage(`Bid placed successfully! You are now the highest bidder at $${bidAmount}`, 'success');
+                    bidInput.value = '';
+                } else {
+                    showCardMessage(artworkId, result.message || 'Failed to place bid', 'error');
+                }
+            } catch (error) {
+                showCardMessage(artworkId, 'Network error. Please try again.', 'error');
+            }
+        }
+
+        // Format time left
+        function formatTimeLeft(endTime) {
+            const now = Date.now();
+            const timeLeft = endTime - now;
+            
+            if (timeLeft <= 0) {
+                return 'Auction ended';
+            }
+            
+            const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            return `${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Start timers
+        function startTimers() {
+            artworks.forEach(artwork => {
+                if (artwork.endTime && artwork.status !== 'sold') {
+                    updateTimer(artwork);
+                }
+            });
+        }
+
+        // Update timer
+        function updateTimer(artwork) {
+            const timerElement = document.getElementById(`timer-${artwork.id}`);
+            if (!timerElement) return;
+
+            const timeLeft = artwork.endTime - Date.now();
+            
+            if (timeLeft <= 0) {
+                // Auction ended
+                artwork.status = 'sold';
+                timerElement.textContent = 'Auction ended';
+                timerElement.className = 'timer';
+                renderGallery();
+                return;
+            }
+
+            timerElement.textContent = formatTimeLeft(artwork.endTime);
+            
+            // Update timer styling based on time left
+            const hoursLeft = timeLeft / (1000 * 60 * 60);
+            if (hoursLeft <= 1) {
+                timerElement.className = 'timer urgent';
+            } else if (hoursLeft <= 3) {
+                timerElement.className = 'timer ending';
+            } else {
+                timerElement.className = 'timer';
+            }
+        }
+
+        // Show top message
+        function showTopMessage(text, type) {
+            // Remove existing top message
+            const existingMessage = document.querySelector('.top-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const message = document.createElement('div');
+            message.className = `top-message ${type}`;
+            message.textContent = text;
+            message.style.display = 'block';
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+
+        // Show card-specific message
+        function showCardMessage(artworkId, text, type) {
+            const messageElement = document.getElementById(`message-${artworkId}`);
+            if (messageElement) {
+                messageElement.textContent = text;
+                messageElement.className = `card-message card-${type}`;
+                messageElement.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageElement.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Filter functionality
+        document.getElementById('searchInput').addEventListener('input', filterArtworks);
+        document.getElementById('categoryFilter').addEventListener('change', filterArtworks);
+        document.getElementById('priceFilter').addEventListener('change', filterArtworks);
+        document.getElementById('statusFilter').addEventListener('change', filterArtworks);
+
+        function filterArtworks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const priceRange = document.getElementById('priceFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const filteredArtworks = artworks.filter(artwork => {
+                const matchesSearch = artwork.title.toLowerCase().includes(searchTerm) ||
+                                    artwork.artist.toLowerCase().includes(searchTerm) ||
+                                    artwork.description.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !category || artwork.category === category;
+                
+                const matchesPrice = !priceRange || (() => {
+                    const [min, max] = priceRange.split('-').map(Number);
+                    if (max) {
+                        return artwork.currentBid >= min && artwork.currentBid <= max;
+                    } else {
+                        return artwork.currentBid >= min;
+                    }
+                })();
+                
+                const matchesStatus = !status || artwork.status === status;
+                
+                return matchesSearch && matchesCategory && matchesPrice && matchesStatus;
+            });
+
+            renderFilteredGallery(filteredArtworks);
+        }
+
+        function renderFilteredGallery(filteredArtworks) {
+            const gallery = document.getElementById('artGallery');
+            gallery.innerHTML = '';
+
+            if (filteredArtworks.length === 0) {
+                gallery.innerHTML = '<div style="text-align: center; color: white; padding: 2rem;">No artworks found matching your criteria.</div>';
+                return;
+            }
+
+            filteredArtworks.forEach(artwork => {
+                const card = createArtCard(artwork);
+                gallery.appendChild(card);
+            });
+        }
+
+        // Update timers every second
+        setInterval(() => {
+            artworks.forEach(artwork => {
+                if (artwork.endTime && artwork.status !== 'sold') {
+                    updateTimer(artwork);
+                }
+            });
+        }, 1000);
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('artGalleryUser');
+            window.location.href = 'login.html';
+        }
+
+        // Close bid modal function
+        function closeBidModal() {
+            const modal = document.getElementById('bidModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Initialize gallery on load
+        window.addEventListener('load', () => {
+            checkUserLogin();
+            initGallery();
+            
+            // Add event listeners for buttons
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+            document.getElementById('closeBidModalBtn')?.addEventListener('click', closeBidModal);
+        });
+    </script>
+</body>
+</html> 
