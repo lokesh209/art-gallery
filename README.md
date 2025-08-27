@@ -1,192 +1,97 @@
-# ArtGallery - Art Marketplace Backend
+# 🎨 Art Gallery Platform
 
-A complete backend system for an art marketplace with AI verification, real-time bidding, and image management.
+A modern art marketplace where artists can showcase their work and art lovers can discover, bid on, and purchase unique pieces. Features AI-powered artwork verification and real-time chat between buyers and sellers.
+
+## ✨ Features
+
+### For Artists (Sellers)
+- **Artwork Upload**: Upload high-quality images with detailed descriptions
+- **AI Verification**: Automatic verification to ensure original artwork
+- **Bid Management**: Accept or reject bids from potential buyers
+- **Real-time Chat**: Communicate directly with buyers after bid acceptance
+- **Profile Management**: Professional artist profiles and portfolios
+
+### For Art Lovers (Buyers)
+- **Artwork Discovery**: Browse curated collections by category and price
+- **Bidding System**: Place bids on artwork you love
+- **Real-time Updates**: Get notified of new bids and auction status
+- **Direct Communication**: Chat with artists after successful bids
+- **Secure Transactions**: Safe and transparent buying process
+
+### Platform Features
+- **AI-Powered Verification**: Ensures authenticity of uploaded artwork
+- **Real-time Bidding**: Live updates and notifications
+- **Secure Authentication**: JWT-based user authentication
+- **Image Storage**: Cloud-based image hosting with Cloudinary
+- **Responsive Design**: Works perfectly on desktop and mobile
+- **Rate Limiting**: Protection against abuse and spam
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v16 or higher)
+- Node.js (v18 or higher)
 - MongoDB (local or Atlas)
-- Cloudinary account (for image storage)
+- Cloudinary account
 
-### Installation
-
-1. **Install dependencies:**
+### Local Development
 ```bash
+# Clone the repository
+git clone <your-repo-url>
+cd art-gallery
+
+# Install dependencies
 npm install
-```
 
-2. **Set up MongoDB:**
-   - **Local:** `brew services start mongodb/brew/mongodb-community`
-   - **Atlas:** Create account at [mongodb.com/atlas](https://mongodb.com/atlas)
+# Set up environment variables
+cp config.env.example config.env
+# Edit config.env with your credentials
 
-3. **Set up Cloudinary:**
-   - Create account at [cloudinary.com](https://cloudinary.com)
-   - Get your cloud name, API key, and API secret
-
-4. **Configure environment variables:**
-   - Copy `config.env` and update with your credentials
-   - Update MongoDB URI, Cloudinary credentials, and JWT secret
-
-5. **Start the server:**
-```bash
+# Start the development server
 npm run dev
 ```
 
-The server will run on `http://localhost:3000`
+### Production Deployment
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed deployment instructions.
 
-## 📊 Data Storage Architecture
+**Quick Deploy (10 minutes):**
+1. Push code to GitHub
+2. Set up MongoDB Atlas
+3. Set up Cloudinary
+4. Deploy on Render
 
-### **🗄️ MongoDB Database (All Text Data)**
+## 📁 Project Structure
 
-**Database Name:** `artgallery`
-
-#### **Collections:**
-
-1. **users** - User profiles and authentication
-   - User information (name, email, password hash)
-   - User type (buyer/seller)
-   - Artist profiles (for sellers)
-   - Shipping addresses (for buyers)
-   - Statistics and ratings
-
-2. **artworks** - Artwork listings and auction data
-   - Artwork details (title, description, category)
-   - Pricing and bidding information
-   - Auction timers and status
-   - AI verification results
-   - View counts and favorites
-
-3. **bids** - Complete bidding history
-   - All bids placed by users
-   - Bid amounts and timestamps
-   - Bid status (active, outbid, won, lost)
-   - IP addresses for security
-
-### **☁️ Cloudinary (All Images)**
-
-**Storage Location:** Cloudinary cloud storage
-
-#### **Image Types Stored:**
-
-1. **Artwork Images** (`/artgallery/` folder)
-   - High-resolution artwork photos
-   - Multiple images per artwork
-   - Optimized versions for different screen sizes
-   - Primary image designation
-
-2. **User Avatars** (`/artgallery/avatars/` folder)
-   - Profile pictures
-   - Optimized and cropped automatically
-
-3. **AI Verification Images**
-   - Temporary storage during AI analysis
-   - Processed images for verification
-
-### **🔐 JWT Tokens (Authentication)**
-
-**Storage:** Client-side (localStorage/sessionStorage)
-- User authentication tokens
-- Token refresh mechanism
-- Session management
-
-## 🌐 API Endpoints
-
-### **Authentication**
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-- `POST /api/auth/logout` - User logout
-
-### **Artworks**
-- `POST /api/artworks` - Create artwork
-- `GET /api/artworks` - Get all artworks (with filters)
-- `GET /api/artworks/:id` - Get single artwork
-- `PUT /api/artworks/:id` - Update artwork
-- `DELETE /api/artworks/:id` - Delete artwork
-- `POST /api/artworks/:id/verify` - AI verification
-
-### **Bidding**
-- `POST /api/bids` - Place bid
-- `GET /api/bids/artwork/:id` - Get bid history
-- `GET /api/bids/my-bids` - User's bid history
-- `GET /api/bids/winning` - Winning bids
-
-### **Upload**
-- `POST /api/upload/artwork-images` - Upload artwork images
-- `POST /api/upload/verify-image` - AI image verification
-- `POST /api/upload/avatar` - Upload user avatar
-
-### **Users**
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update profile
-- `GET /api/users/statistics` - User statistics
-- `GET /api/users/my-artworks` - User's artworks
-- `GET /api/users/favorites` - User's favorites
-
-## 🔗 Frontend Integration
-
-### **Update Frontend URLs:**
-
-1. **Update login.html:**
-```javascript
-// Change redirect URLs
-window.location.href = 'http://localhost:3000/api/auth/login';
+```
+art-gallery/
+├── models/              # Database models
+│   ├── User.js         # User authentication
+│   ├── Artwork.js      # Artwork management
+│   ├── Bid.js          # Bidding system
+│   ├── Chat.js         # Real-time messaging
+│   ├── Transaction.js  # Transaction records
+│   └── Notification.js # User notifications
+├── routes/             # API endpoints
+│   ├── auth.js         # Authentication routes
+│   ├── artworks.js     # Artwork management
+│   ├── bids.js         # Bidding system
+│   ├── chats.js        # Chat functionality
+│   ├── upload.js       # File upload handling
+│   └── notifications.js # Notification system
+├── middleware/         # Custom middleware
+│   ├── auth.js         # JWT authentication
+│   └── errorHandler.js # Error handling
+├── public/            # Static files
+│   ├── homepage.html  # Seller dashboard
+│   ├── gallery.html   # Buyer gallery
+│   ├── chat.html      # Chat interface
+│   └── login.html     # Authentication
+└── server.js          # Main server file
 ```
 
-2. **Update gallery.html:**
-```javascript
-// Update API base URL
-const API_BASE = 'http://localhost:3000/api';
-```
+## 🔧 Configuration
 
-3. **Update homepage.html:**
-```javascript
-// Update form submission to backend
-fetch('http://localhost:3000/api/artworks', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(artworkData)
-});
-```
-
-### **CORS Configuration:**
-The backend is configured to accept requests from any origin in development. For production, update the CORS settings in `server.js`.
-
-## 🤖 AI Integration
-
-### **Current Setup:**
-- AI verification endpoints are ready
-- Simulated AI responses for development
-- Easy integration with your AI model
-
-### **To Integrate Your AI Model:**
-
-1. **Update AI Model URL in `config.env`:**
-```
-AI_MODEL_URL=http://your-ai-server:port/verify
-AI_MODEL_API_KEY=your-ai-api-key
-```
-
-2. **The AI verification function is in:**
-- `routes/artworks.js` - `verifyWithAI()`
-- `routes/upload.js` - `verifyWithAI()`
-
-3. **Expected AI Response Format:**
-```json
-{
-    "is_human_created": true,
-    "confidence": 0.95
-}
-```
-
-## 🔧 Environment Variables
-
-### **Required Variables:**
-```env
+### Environment Variables
+```bash
 # Server
 PORT=3000
 NODE_ENV=development
@@ -194,96 +99,109 @@ NODE_ENV=development
 # Database
 MONGODB_URI=mongodb://localhost:27017/artgallery
 
-# Authentication
-JWT_SECRET=your-super-secret-jwt-key
+# JWT
+JWT_SECRET=your-super-secure-jwt-secret
 JWT_EXPIRE=7d
 
-# Image Storage
+# Cloudinary (Image Storage)
 CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
 
 # AI Model
-AI_MODEL_URL=http://your-ai-server/verify
-AI_MODEL_API_KEY=your-ai-key
+AI_MODEL_URL=http://localhost:8000/verify
+AI_MODEL_API_KEY=your-ai-api-key
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=1000
 ```
 
-## 📱 Real-time Features
+## 🛠️ API Endpoints
 
-### **Socket.IO Integration:**
-- Real-time bidding updates
-- Live auction status changes
-- Instant notifications
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
 
-### **Usage:**
-```javascript
-// Connect to Socket.IO
-const socket = io('http://localhost:3000');
+### Artworks
+- `GET /api/artworks` - Get all artworks
+- `POST /api/artworks` - Upload new artwork
+- `GET /api/artworks/:id` - Get specific artwork
+- `PUT /api/artworks/:id/accept-bid` - Accept a bid
 
-// Join artwork room
-socket.emit('join-artwork-room', artworkId);
+### Bidding
+- `POST /api/bids` - Place a bid
+- `GET /api/bids/artwork/:artworkId` - Get bids for artwork
 
-// Listen for bid updates
-socket.on('bid-placed', (data) => {
-    // Update UI with new bid
-});
-```
+### Chat
+- `GET /api/chats` - Get user's chats
+- `GET /api/chats/:id` - Get specific chat
+- `POST /api/chats/:id/messages` - Send message
 
-## 🚀 Production Deployment
+### Notifications
+- `GET /api/notifications` - Get user notifications
+- `PUT /api/notifications/:id/read` - Mark as read
 
-### **Recommended Setup:**
-1. **Database:** MongoDB Atlas
-2. **Image Storage:** Cloudinary
-3. **Server:** Heroku, Vercel, or AWS
-4. **Domain:** Custom domain with SSL
+## 🎯 Deployment Options
 
-### **Environment Variables for Production:**
-```env
-NODE_ENV=production
-MONGODB_URI=mongodb+srv://your-atlas-uri
-JWT_SECRET=very-long-secure-secret
-```
+### Free Tier (Recommended)
+- **Render**: Free hosting with automatic deployments
+- **MongoDB Atlas**: Free database (512MB)
+- **Cloudinary**: Free image storage (25GB)
+
+### Paid Options
+- **Railway**: $20/month for better performance
+- **Heroku**: $7/month for reliable hosting
+- **Vercel**: Free frontend + paid backend
 
 ## 🔒 Security Features
 
-- **JWT Authentication** with token refresh
-- **Password hashing** with bcrypt
-- **Input validation** and sanitization
-- **Rate limiting** to prevent abuse
-- **CORS configuration** for frontend security
-- **File upload validation** and size limits
+- **JWT Authentication**: Secure user sessions
+- **Rate Limiting**: Protection against abuse
+- **Input Validation**: XSS and injection prevention
+- **File Upload Security**: Image validation and sanitization
+- **CORS Protection**: Cross-origin request security
+- **Helmet.js**: Security headers
 
-## 📈 Performance Features
+## 📱 User Experience
 
-- **Database indexing** for fast queries
-- **Image optimization** with Cloudinary
-- **Pagination** for large datasets
-- **Caching** ready for implementation
-- **Compression** for API responses
+### Responsive Design
+- Mobile-first approach
+- Works on all devices
+- Touch-friendly interface
 
-## 🐛 Troubleshooting
+### Real-time Features
+- Live bidding updates
+- Instant chat messaging
+- Real-time notifications
 
-### **Common Issues:**
+### Performance
+- Optimized image loading
+- Efficient database queries
+- CDN for static assets
 
-1. **Port 5000 in use:**
-   - Change PORT in config.env to 3000
+## 🤝 Contributing
 
-2. **MongoDB connection failed:**
-   - Ensure MongoDB is running: `brew services start mongodb/brew/mongodb-community`
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-3. **Cloudinary upload failed:**
-   - Check your Cloudinary credentials in config.env
+## 📄 License
 
-4. **CORS errors:**
-   - Backend is configured to accept all origins in development
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Support
+## 🆘 Support
 
-For issues or questions:
-1. Check the server logs for error messages
-2. Verify all environment variables are set correctly
-3. Ensure MongoDB and Cloudinary are properly configured
+- **Documentation**: See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
+- **Issues**: Report bugs on GitHub
+- **Questions**: Open a discussion
+
+## 🎉 Getting Started
+
+Ready to deploy your art gallery? Follow the [Quick Deploy Guide](./QUICK_DEPLOY.md) to get online in 10 minutes!
 
 ---
 
-**🎨 ArtGallery Backend** - Complete art marketplace backend with AI verification, real-time bidding, and secure image management. 
+**Built with ❤️ for the art community** 
