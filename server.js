@@ -62,8 +62,8 @@ app.use(helmet({
 // CORS configuration
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://your-app-name.onrender.com', 'https://your-custom-domain.com'] 
-        : ['http://localhost:3000', 'http://localhost:5000', 'http://127.0.0.1:3000'],
+        ? ['https://art-gallery-v085.onrender.com', 'https://your-custom-domain.com'] 
+        : ['http://localhost:3000', 'http://localhost:5000', 'http://127.0.0.1:3000', 'https://art-gallery-v085.onrender.com'],
     credentials: true,
     optionsSuccessStatus: 200
 };

@@ -645,7 +645,7 @@
                     return;
                 }
 
-                const response = await fetch('http://localhost:3000/api/artworks', {
+                const response = await fetch(API_CONFIG.getApiUrl('/artworks'), {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -791,7 +791,7 @@
                     return;
                 }
 
-                const response = await fetch('http://localhost:3000/api/bids', {
+                const response = await fetch(API_CONFIG.getApiUrl('/bids'), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1006,5 +1006,6 @@
             document.getElementById('closeBidModalBtn')?.addEventListener('click', closeBidModal);
         });
     </script>
+    <script src="config.js"></script>
 </body>
 </html> 

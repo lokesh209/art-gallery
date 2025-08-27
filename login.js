@@ -171,7 +171,7 @@ function showSecretAdminAccess() {
     
     if (adminEmail && adminPassword) {
         // Try to login with admin credentials
-        fetch('http://localhost:3000/api/auth/login', {
+        fetch(API_CONFIG.getApiUrl('/auth/login'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -215,7 +215,7 @@ async function handleSellerLogin(event) {
     
     try {
         console.log('Making API call to login...');
-        const response = await fetch('http://localhost:3000/api/auth/login', {
+        const response = await fetch(API_CONFIG.getApiUrl('/auth/login'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -291,7 +291,7 @@ async function handleSellerRegister(event) {
         };
         console.log('Registration request body:', requestBody);
         
-        const response = await fetch('http://localhost:3000/api/auth/register', {
+        const response = await fetch(API_CONFIG.getApiUrl('/auth/register'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -332,7 +332,7 @@ async function handleBuyerLogin(event) {
     hideMessage('buyerLoginError');
     
     try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
+        const response = await fetch(API_CONFIG.getApiUrl('/auth/login'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -392,7 +392,7 @@ async function handleBuyerRegister(event) {
     hideMessage('buyerRegisterError');
     
     try {
-        const response = await fetch('http://localhost:3000/api/auth/register', {
+        const response = await fetch(API_CONFIG.getApiUrl('/auth/register'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
